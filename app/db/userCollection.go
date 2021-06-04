@@ -13,17 +13,20 @@ func usersCollection() (collection *mongo.Collection) {
 	return collection
 }
 
-func InsertUser(User model.User) (err error) {
+func InsertUser(User model.User) (isExist bool) {
 	User.Id = primitive.NewObjectID()
-	_, err = usersCollection().InsertOne(context.Background(), User)
+	_, err := usersCollection().InsertOne(context.Background(), User)
 	if err != nil {
-		return err
+		if err == mongo.ErrNoDocuments {
+			return false
+		}
+		return
 	}
-	return nil
+	return true
 }
 
-func FindUserByID(ID string) (User model.User, isExist bool) {
-	filter := bson.M{"id": ID}
+func FindUserByUsername(Username string) (User model.User, isExist bool) {
+	filter := bson.M{"username": Username}
 
 	err := usersCollection().FindOne(context.Background(), filter).Decode(&User)
 	if err != nil {
@@ -35,7 +38,7 @@ func FindUserByID(ID string) (User model.User, isExist bool) {
 	return User, true
 }
 
-func UpdateUser(User model.User) (err error) {
+func UpdateUser(User model.User) (isExist bool) {
 	filter := bson.M{"_id": User.Id}
 
 	update := bson.D{
@@ -45,20 +48,25 @@ func UpdateUser(User model.User) (err error) {
 		}},
 	}
 
-	_, err = usersCollection().UpdateOne(context.Background(), update, filter)
+	_, err := usersCollection().UpdateOne(context.Background(), update, filter)
 	if err != nil {
-		return err
+		if err == mongo.ErrNoDocuments {
+			return false
+		}
 	}
-	return nil
+	return true
 }
 
-func DeleteUser(User model.User) (err error) {
+func DeleteUser(User model.User) (isExist bool) {
 	filter := bson.M{"_id": User.Id}
 
-	_, err = usersCollection().DeleteOne(context.Background(), filter)
+	_, err := usersCollection().DeleteOne(context.Background(), filter)
 	if err != nil {
-		return err
+		if err == mongo.ErrNoDocuments {
+			return false
+		}
+		return
 	}
 
-	return nil
+	return true
 }
