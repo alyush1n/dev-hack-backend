@@ -30,8 +30,9 @@ func Register(c *gin.Context) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(jsonInput.Password), bcrypt.DefaultCost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "internal server error",
+			"message": "internal server errorrrr",
 		})
+		return
 	}
 	userID := primitive.NewObjectID()
 	user := model.User{
@@ -41,9 +42,11 @@ func Register(c *gin.Context) {
 	}
 	err = db.InsertUser(user)
 	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "internal server error",
 		})
+		return
 	}
 
 	userToken, err = session.Create(jsonInput.Username)

@@ -40,10 +40,4 @@ func Connect() {
 	}
 
 	fmt.Println("Connected to MongoDB!")
-
-	defer func() {
-		if err = client.Disconnect(ctx); err != nil {
-			panic(err)
-		}
-	}()
 }

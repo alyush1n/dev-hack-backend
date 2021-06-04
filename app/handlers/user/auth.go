@@ -34,6 +34,7 @@ func Auth(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "invalid credentials",
 		})
+		return
 	}
 
 	token, err := session.Create(user.Username)
