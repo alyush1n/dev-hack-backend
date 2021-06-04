@@ -2,7 +2,10 @@ package db
 
 import (
 	"context"
+	"dev-hack-backend/app/model"
 	"fmt"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -31,6 +34,53 @@ func Connect() {
 	}
 
 	fmt.Println("Connected to MongoDB!")
+}
+
+func IsnsertUser(User model.User) (err error) {
+	User.Id = primitive.NewObjectID()
+	_, err = usersCollection().InsertOne(context.Background(), User)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func FindUserById(Id primitive.ObjectID) (User model.User, err error) {
+	filter := bson.M{"_id": Id}
+
+	err = usersCollection().FindOne(context.Background(), filter).Decode(&User)
+	if err != nil {
+		return model.User{}, err
+	}
+	return User, nil
+}
+
+func UpdateUser(User model.User) (err error) {
+	filter := bson.M{"_id": User.Id}
+
+	update := bson.D{
+		{"$set", bson.D{
+			{"username", User.Username},
+			{"password", User.Password},
+		}},
+	}
+
+	_, err = usersCollection().UpdateOne(context.Background(), update, filter)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteUser(User model.User) (err error) {
+	filter := bson.M{"_id": User.Id}
+
+	_, err = usersCollection().DeleteOne(context.Background(), filter)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func usersCollection() (collection *mongo.Collection) {
