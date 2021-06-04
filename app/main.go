@@ -1,5 +1,7 @@
 package main
 
-func main() {
+import "db"
 
+func main() {
+	db.Connect()
 }
