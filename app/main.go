@@ -3,6 +3,7 @@ package main
 import (
 	"dev-hack-backend/app/config"
 	"dev-hack-backend/app/db"
+	"dev-hack-backend/app/handlers/events"
 	"dev-hack-backend/app/handlers/user"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -22,6 +23,7 @@ func main() {
 	})
 	app.POST("/auth", user.Auth)
 	app.POST("/user", user.Register)
+	app.GET("/feed", events.Load)
 
 	err := app.Run("localhost:" + config.Port)
 	if err != nil {
