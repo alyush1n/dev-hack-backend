@@ -2,7 +2,7 @@ package events
 
 import (
 	"dev-hack-backend/app/config"
-	"fmt"
+	"dev-hack-backend/app/db"
 	"github.com/gin-gonic/gin"
 	"github.com/zhashkevych/auth/pkg/auth"
 	"github.com/zhashkevych/auth/pkg/parser"
@@ -39,5 +39,7 @@ func Load(c *gin.Context) {
 		c.AbortWithStatus(status)
 		return
 	}
-	fmt.Println(username)
+
+	user, ok := db.FindUserByUsername(username)
+
 }
