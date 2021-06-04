@@ -1,6 +1,6 @@
 package main
 
-import "db"
+import "dev-hack-backend/app/db"
 
 func main() {
 	db.Connect()
