@@ -14,7 +14,7 @@ type User struct {
 type Events struct {
 	Id         primitive.ObjectID `bson:"_id"`
 	Name       string             `json:"name" bson:"name" binding:"required"`
-	Location   string             `json:"address" bson:"address" binding:"required"`
+	Location   string             `json:"location" bson:"location" binding:"required"`
 	Date       time.Time          `json:"date" bson:"date"`
 	Attachment string             `json:"attachment" bson:"attachment"`
 }
