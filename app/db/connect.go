@@ -19,7 +19,6 @@ func Connect() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	err = client.Connect(context.TODO())
 	if err != nil {
 		log.Fatal(err)

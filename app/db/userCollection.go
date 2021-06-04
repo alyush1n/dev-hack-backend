@@ -22,8 +22,8 @@ func InsertUser(User model.User) (err error) {
 	return nil
 }
 
-func FindUserById(Id primitive.ObjectID) (User model.User, isExist bool) {
-	filter := bson.M{"_id": Id}
+func FindUserByID(ID string) (User model.User, isExist bool) {
+	filter := bson.M{"id": ID}
 
 	err := usersCollection().FindOne(context.Background(), filter).Decode(&User)
 	if err != nil {

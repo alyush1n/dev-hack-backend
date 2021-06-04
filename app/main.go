@@ -20,4 +20,6 @@ func main() {
 	})
 
 
+	app.POST("/auth", )
+
 }
