@@ -4,6 +4,7 @@ import (
 	"dev-hack-backend/app/config"
 	"dev-hack-backend/app/db"
 	"dev-hack-backend/app/handlers/user"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,4 +23,9 @@ func main() {
 
 	app.POST("/auth", user.Auth)
 	app.POST("/user", user.Register)
+
+	err := app.Run("8080")
+	if err != nil {
+		fmt.Println("Error in launching backend: " + err.Error())
+	}
 }

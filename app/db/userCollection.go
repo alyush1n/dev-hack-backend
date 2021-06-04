@@ -4,7 +4,6 @@ import (
 	"context"
 	"dev-hack-backend/app/model"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -13,16 +12,12 @@ func usersCollection() (collection *mongo.Collection) {
 	return collection
 }
 
-func InsertUser(User model.User) (isExist bool) {
-	User.Id = primitive.NewObjectID()
-	_, err := usersCollection().InsertOne(context.Background(), User)
+func InsertUser(User model.User) (err error) {
+	_, err = usersCollection().InsertOne(context.Background(), User)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return false
-		}
-		return
+		return err
 	}
-	return true
+	return nil
 }
 
 func FindUserByUsername(Username string) (User model.User, isExist bool) {

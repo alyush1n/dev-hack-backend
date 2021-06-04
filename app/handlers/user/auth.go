@@ -3,6 +3,7 @@ package user
 import (
 	"dev-hack-backend/app/db"
 	"dev-hack-backend/app/session"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
@@ -22,7 +23,7 @@ func Auth(c *gin.Context) {
 		return
 	}
 	//TODO: GetUserByID Andrey
-	user, exist := db.FindUserByID(jsonInput.Username)
+	user, exist := db.FindUserByUsername(jsonInput.Username)
 	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "invalid credentials",
@@ -35,9 +36,14 @@ func Auth(c *gin.Context) {
 		})
 	}
 
+	token, err := session.Create(user.Username)
+	if err != nil {
+		fmt.Println("Error in generating JWT: " + err.Error())
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
-		"token":   session.Create(user.Username),
+		"token":   token,
 	})
 
 }
