@@ -51,17 +51,3 @@ func UpdateUser(User model.User) (isExist bool) {
 	}
 	return true
 }
-
-func DeleteUser(User model.User) (isExist bool) {
-	filter := bson.M{"_id": User.Id}
-
-	_, err := usersCollection().DeleteOne(context.Background(), filter)
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return false
-		}
-		return
-	}
-
-	return true
-}

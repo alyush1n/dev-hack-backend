@@ -16,5 +16,11 @@ type Events struct {
 	Name       string             `json:"name" bson:"name" binding:"required"`
 	Location   string             `json:"location" bson:"location" binding:"required"`
 	Date       time.Time          `json:"date" bson:"date"`
-	Attachment string             `json:"attachment" bson:"attachment"`
+	Attachment `json:"attachment" bson:"attachment"`
+}
+
+type Attachment struct {
+	Id     primitive.ObjectID `bson:"_id"`
+	URL    string             `json:"url" bson:"url" binding:"required"`
+	SentBy string             `json:"sent_by" bson:"sent_by" binding:"required"`
 }

@@ -31,7 +31,7 @@ func Connect() {
 	//	fmt.Println("Client error: "+err.Error())
 	//}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	var err error
 	client, err = mongo.Connect(ctx, options.Client().ApplyURI("mongodb+srv://fizik:"+config.MongoPass+"@cluster0.oeuni.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"))
@@ -40,10 +40,10 @@ func Connect() {
 	}
 
 	fmt.Println("Connected to MongoDB!")
-	//
-	//defer func() {
-	//	if err = client.Disconnect(ctx); err != nil {
-	//		panic(err)
-	//	}
-	//}()
+
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			panic(err)
+		}
+	}()
 }
