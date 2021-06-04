@@ -20,11 +20,10 @@ func main() {
 	app.NoRoute(func(c *gin.Context) {
 		c.JSON(404, gin.H{"message": "not found"})
 	})
-
 	app.POST("/auth", user.Auth)
 	app.POST("/user", user.Register)
 
-	err := app.Run("8080")
+	err := app.Run("localhost:" + config.Port)
 	if err != nil {
 		fmt.Println("Error in launching backend: " + err.Error())
 	}
