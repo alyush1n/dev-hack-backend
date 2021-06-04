@@ -35,8 +35,9 @@ type Attachment struct {
 	SentBy string             `json:"sent_by" bson:"sent_by" binding:"required"`
 }
 
-type Clubs struct {
+type Club struct {
 	IncomingEvents  []string
 	Logo            Attachment
 	BackgroundImage Attachment
 }
+

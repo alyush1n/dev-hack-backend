@@ -3,6 +3,7 @@ package events
 import (
 	"dev-hack-backend/app/config"
 	"dev-hack-backend/app/db"
+	"dev-hack-backend/app/model"
 	"github.com/gin-gonic/gin"
 	"github.com/zhashkevych/auth/pkg/auth"
 	"github.com/zhashkevych/auth/pkg/parser"
@@ -40,6 +41,21 @@ func Load(c *gin.Context) {
 		return
 	}
 
-	user, ok := db.FindUserByUsername(username)
+	var list []model.Event
 
+	user, ok := db.FindUserByUsername(username)
+	for _, clubID := range user.Clubs {
+		club := db.GetClubByID(clubID)
+		for _, eventID := range club.IncomingEvents {
+			event := db.GetEventByID(eventID)
+			list = append(list, event)
+		}
+
+	}
+	// TODO: sort list by date
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+		"events":  list,
+	})
 }
