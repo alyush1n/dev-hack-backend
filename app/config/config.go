@@ -8,6 +8,7 @@ import (
 
 var (
 	AccessSecret string
+	MongoPass    string
 )
 
 func Load() {
@@ -16,5 +17,6 @@ func Load() {
 		fmt.Println("Error in loading configs: " + err.Error())
 	} else {
 		AccessSecret = os.Getenv("ACCESS_SECRET")
+
 	}
 }
