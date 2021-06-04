@@ -39,8 +39,8 @@ func Register(c *gin.Context) {
 		Username: jsonInput.Username,
 		Password: string(hashedPassword),
 	}
-	ok := db.InsertUser(user)
-	if !ok {
+	err = db.InsertUser(user)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "internal server error",
 		})
