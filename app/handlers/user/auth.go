@@ -22,7 +22,7 @@ func Auth(c *gin.Context) {
 		return
 	}
 	//TODO: GetUserByID Andrey
-	user, exist := db.FindUserByID(jsonInput.Username)
+	user, exist := db.FindUserByUsername(jsonInput.Username)
 	if !exist {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "invalid credentials",
