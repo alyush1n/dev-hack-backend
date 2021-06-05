@@ -4,7 +4,6 @@ import (
 	"dev-hack-backend/app/db"
 	"dev-hack-backend/app/handlers/user"
 	"dev-hack-backend/app/model"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -31,7 +30,6 @@ func Load(c *gin.Context) {
 
 		}
 	}
-	fmt.Println(eventsList)
 	// TODO: sort eventsList by date
 
 	c.JSON(http.StatusOK, gin.H{

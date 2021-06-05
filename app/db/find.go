@@ -28,6 +28,7 @@ func GetEventByID(Id string) (event model.Event, isExist bool) {
 
 	err = eventsCollection.FindOne(context.Background(), filter).Decode(&event)
 	if err != nil {
+		fmt.Println(err)
 		if err == mongo.ErrNoDocuments {
 			return model.Event{}, false
 		}

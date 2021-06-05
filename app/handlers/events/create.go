@@ -11,12 +11,13 @@ import (
 
 func Create(c *gin.Context) {
 	jsonInput := struct {
-		Type     string   `json:"type"`
-		Name     string   `json:"name"`
-		Location string   `json:"location"`
-		Date     string   `json:"date"`
-		SentBy   string   `json:"sent_by"`
-		URL      string   `json:"url"`
+		Type     string `json:"type"`
+		Name     string `json:"name"`
+		Count    int    `json:"count"`
+		Location string `json:"location"`
+		Date     string `json:"date"`
+		SentBy   string `json:"sent_by"`
+		URL      string `json:"url"`
 	}{}
 
 	if err := c.ShouldBindJSON(&jsonInput); err != nil {
@@ -31,6 +32,7 @@ func Create(c *gin.Context) {
 		Id:       eventID,
 		Type:     jsonInput.Type,
 		Name:     jsonInput.Name,
+		Count:    jsonInput.Count,
 		Location: jsonInput.Location,
 		Date:     jsonInput.Date,
 		Attachment: model.Attachment{
