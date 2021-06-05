@@ -5,7 +5,7 @@ import (
 )
 
 type User struct {
-	Id        primitive.ObjectID   `bson:"_id"`
+	Id        primitive.ObjectID   `json:"id" bson:"_id"`
 	Username  string               `json:"username" bson:"username" binding:"required"`
 	Password  string               `json:"password" bson:"password" binding:"required"`
 	Clubs     []primitive.ObjectID `json:"clubs" bson:"clubs"`
@@ -16,13 +16,14 @@ type User struct {
 }
 
 type Event struct {
-	Id         primitive.ObjectID `bson:"_id"`
-	Clubs      []string           `json:"clubs" bson:"clubs"`
-	Type       string             `json:"type" bson:"type"`
-	Name       string             `json:"name" bson:"name"`
-	Location   string             `json:"location" bson:"location"`
-	Date       string             `json:"date" bson:"date"`
-	Attachment `json:"attachment" bson:"attachment"`
+	Id          primitive.ObjectID `bson:"_id"`
+	Clubs       []string           `json:"clubs" bson:"clubs"`
+	Type        string             `json:"type" bson:"type"`
+	Name        string             `json:"name" bson:"name"`
+	Description string             `json:"description" bson:"description"`
+	Location    string             `json:"location" bson:"location"`
+	Date        string             `json:"date" bson:"date"`
+	Attachment  `json:"attachment" bson:"attachment"`
 }
 
 type Attachment struct {

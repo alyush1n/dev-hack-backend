@@ -1,46 +1,15 @@
 package events
 
 import (
-	"dev-hack-backend/app/config"
 	"dev-hack-backend/app/db"
-	"dev-hack-backend/app/db/storage"
 	"dev-hack-backend/app/model"
 	"fmt"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"log"
 	"net/http"
-	"strings"
 )
 
 func Create(c *gin.Context) {
-
-	fileHeader, err := c.FormFile("file")
-	if err != nil {
-		log.Fatal("get file" + err.Error())
-	}
-
-	s, err := session.NewSession(&aws.Config{
-		Region:      aws.String(storage.S3_REGION),
-		Credentials: credentials.NewStaticCredentials(config.S3ID, config.S3Secret, ""),
-	})
-	if err != nil {
-		log.Fatal("session	: " + err.Error())
-	}
-
-	f, err := fileHeader.Open()
-	if err != nil {
-		log.Fatal("Open header" + err.Error())
-	}
-	fileName := strings.Replace(fileHeader.Filename, " ", "_", -1)
-	url, err := storage.AddFilesToS3(s, fileName, f)
-
-	//url := "https://%s.s3.%s.amazonaws.com/%s"
-	//url = fmt.Sprintf(url, storage.S3_BUCKET, storage.S3_REGION, fileName)
-	fmt.Println(url)
 	jsonInput := struct {
 		Clubs    []string `json:"clubs"`
 		Type     string   `json:"type"`
@@ -48,6 +17,7 @@ func Create(c *gin.Context) {
 		Location string   `json:"location"`
 		Date     string   `json:"date"`
 		SentBy   string   `json:"sent_by"`
+		URL      string   `json:"url"`
 	}{}
 
 	if err := c.ShouldBindJSON(&jsonInput); err != nil {
@@ -66,11 +36,17 @@ func Create(c *gin.Context) {
 		Date:     jsonInput.Date,
 		Attachment: model.Attachment{
 			Id:     primitive.NewObjectID(),
-			URL:    url,
+			URL:    jsonInput.URL,
 			SentBy: jsonInput.SentBy,
 		},
 	}
-
+	err := db.InsertAttachment(event.Attachment)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "internal server error",
+		})
+	}
 	err = db.InsertEvent(event)
 	if err != nil {
 		fmt.Println(err)
@@ -80,7 +56,8 @@ func Create(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "ok",
+		"message":       "ok",
+		"attachment_id": eventID.String(),
 	})
 
 }
