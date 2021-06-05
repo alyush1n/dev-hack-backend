@@ -35,7 +35,7 @@ type Attachment struct {
 type Club struct {
 	Id              primitive.ObjectID `json:"id" bson:"_id"`
 	Name            string             `json:"name" bson:"name"`
-	IncomingEvents  []string           `json:"incomingevents" bson:"incomingevents"`
+	IncomingEvents  []string           `json:"incoming_events" bson:"incoming_events"`
 	Logo            Attachment         `json:"logo" bson:"logo"`
 	BackgroundImage Attachment         `json:"background_image" bson:"background_image"`
 }
