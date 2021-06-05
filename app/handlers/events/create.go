@@ -11,7 +11,6 @@ import (
 
 func Create(c *gin.Context) {
 	jsonInput := struct {
-		Clubs    []string `json:"clubs"`
 		Type     string   `json:"type"`
 		Name     string   `json:"name"`
 		Location string   `json:"location"`
@@ -56,8 +55,8 @@ func Create(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message":       "ok",
-		"attachment_id": eventID.String(),
+		"message": "ok",
+		"event":   event,
 	})
 
 }
