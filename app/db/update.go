@@ -13,7 +13,7 @@ func UpdateEvent(event model.Event) (isExist bool) {
 	update := bson.D{
 		{"$set", bson.D{
 			{"name", event.Name},
-			{"location", event.Location},
+			{"location", event.City},
 			{"date", event.Date},
 			{"attachment", bson.D{
 				{"url", event.URL},

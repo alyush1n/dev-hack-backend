@@ -24,6 +24,8 @@ func main() {
 	app.POST("/auth", user.Auth)
 	app.POST("/user", user.Register)
 	app.GET("/feed", events.Load)
+	app.POST("/profile", user.Profile)
+	app.POST("/attend", user.Participate)
 
 	err := app.Run("localhost:" + config.Port)
 	if err != nil {
