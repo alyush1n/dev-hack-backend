@@ -13,7 +13,7 @@ func eventCollection() (collection *mongo.Collection) {
 	return collection
 }
 
-func InsertEvent(Event model.Events) (isExist bool) {
+func InsertEvent(Event model.Event) (isExist bool) {
 	Event.Id = primitive.NewObjectID()
 	_, err := eventCollection().InsertOne(context.Background(), Event)
 	if err != nil {
@@ -22,20 +22,20 @@ func InsertEvent(Event model.Events) (isExist bool) {
 	return true
 }
 
-func FindEventById(Id primitive.ObjectID) (event model.Events, isExist bool) {
+func FindEventById(Id primitive.ObjectID) (event model.Event, isExist bool) {
 	filter := bson.M{"_id": Id}
 
 	err := eventCollection().FindOne(context.Background(), filter).Decode(&event)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			return model.Events{}, false
+			return model.Event{}, false
 		}
 		return
 	}
 	return event, true
 }
 
-func UpdateEvent(event model.Events) (isExist bool) {
+func UpdateEvent(event model.Event) (isExist bool) {
 	filter := bson.M{"_id": event.Id}
 
 	update := bson.D{
@@ -61,7 +61,7 @@ func UpdateEvent(event model.Events) (isExist bool) {
 	return true
 }
 
-func DeleteEvent(event model.Events) (isExist bool) {
+func DeleteEvent(event model.Event) (isExist bool) {
 	filter := bson.M{"_id": event.Id}
 
 	_, err := eventCollection().DeleteOne(context.Background(), filter)

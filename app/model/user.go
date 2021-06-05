@@ -6,17 +6,27 @@ import (
 )
 
 type User struct {
-	Id       primitive.ObjectID `bson:"_id"`
-	Username string             `json:"username" bson:"username" binding:"required"`
-	Password string             `json:"password" bson:"password" binding:"required"`
+	Id        primitive.ObjectID `bson:"_id"`
+	Username  string             `json:"username" bson:"username" binding:"required"`
+	Password  string             `json:"password" bson:"password" binding:"required"`
+	Clubs     []string
+	FirstName string
+	LastName  string
+	Sex       string
+	Points    string
+	Stats
 }
 
-type Events struct {
+type Stats struct {
+}
+
+type Event struct {
 	Id         primitive.ObjectID `bson:"_id"`
 	Name       string             `json:"name" bson:"name" binding:"required"`
 	Location   string             `json:"location" bson:"location" binding:"required"`
 	Date       time.Time          `json:"date" bson:"date"`
 	Attachment `json:"attachment" bson:"attachment"`
+	IsUnique   bool
 }
 
 type Attachment struct {
