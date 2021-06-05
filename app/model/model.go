@@ -2,7 +2,6 @@ package model
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"time"
 )
 
 type User struct {
@@ -22,11 +21,13 @@ type Stats struct {
 }
 
 type Event struct {
-	Id         primitive.ObjectID `bson:"_id"`
-	Name       string             `json:"name" bson:"name" binding:"required"`
-	City       string             `json:"city" bson:"city" binding:"required"`
-	Date       time.Time          `json:"date" bson:"date"`
-	Attachment `json:"attachment" bson:"attachment"`
+	Id              primitive.ObjectID `bson:"_id"`
+	Name            string             `json:"name" bson:"name" binding:"required"`
+	City            string             `json:"city" bson:"city" binding:"required"`
+	Date            string             `json:"date" bson:"date"`
+	Logo            Attachment         `json:"logo" bson:"logo"`
+	BackgroundImage Attachment         `json:"background_image" bson:"background_image"` //обратимся к SendBy от фотокарточки и получим отправителя
+	// (создателя ивента)
 }
 
 type Attachment struct {
@@ -36,8 +37,7 @@ type Attachment struct {
 }
 
 type Club struct { //tags
-	Id              primitive.ObjectID   `bson:"_id"`
-	Events          []primitive.ObjectID `json:"events" bson:"events"`
-	Logo            Attachment           `json:"logo" bson:"logo"`
-	BackgroundImage Attachment           `json:"background_image" bson:"background_image"`
+	Id     primitive.ObjectID   `bson:"_id"`
+	Events []primitive.ObjectID `json:"events" bson:"events"`
+	Logo   Attachment           `json:"logo" bson:"logo"`
 }

@@ -7,31 +7,31 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func UpdateEvent(event model.Event) (isExist bool) {
-	filter := bson.M{"_id": event.Id}
-
-	update := bson.D{
-		{"$set", bson.D{
-			{"name", event.Name},
-			{"location", event.City},
-			{"date", event.Date},
-			{"attachment", bson.D{
-				{"url", event.URL},
-				{"sent_by", event.SentBy},
-			}},
-		}},
-	}
-
-	_, err := eventCollection.UpdateOne(context.Background(), update, filter)
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return false
-		}
-		return
-	}
-
-	return true
-}
+//func UpdateEvent(event model.Event) (isExist bool) {
+//	filter := bson.M{"_id": event.Id}
+//
+//	update := bson.D{
+//		{"$set", bson.D{
+//			{"name", event.Name},
+//			{"location", event.City},
+//			{"date", event.Date},
+//			{"attachment", bson.D{
+//				{"url", },
+//				{"sent_by", event.SentBy},
+//			}},
+//		}},
+//	}
+//
+//	_, err := eventCollection.UpdateOne(context.Background(), update, filter)
+//	if err != nil {
+//		if err == mongo.ErrNoDocuments {
+//			return false
+//		}
+//		return
+//	}
+//
+//	return true
+//}
 
 func UpdateUser(User model.User) (isExist bool) {
 	filter := bson.M{"_id": User.Id}

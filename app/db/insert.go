@@ -13,10 +13,10 @@ func InsertUser(User model.User) (err error) {
 	return nil
 }
 
-func InsertEvent(Event model.Event) (isExist bool) {
-	_, err := eventCollection.InsertOne(context.Background(), Event)
+func InsertEvent(Event model.Event) (err error) {
+	_, err = eventCollection.InsertOne(context.Background(), Event)
 	if err != nil {
-		return false
+		return err
 	}
-	return true
+	return nil
 }

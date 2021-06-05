@@ -10,9 +10,8 @@ import (
 )
 
 func main() {
-
 	config.Load()
-	fmt.Println(config.MongoPass)
+
 	db.Connect()
 
 	app := gin.Default()
@@ -21,11 +20,13 @@ func main() {
 	app.NoRoute(func(c *gin.Context) {
 		c.JSON(404, gin.H{"message": "not found"})
 	})
+
 	app.POST("/auth", user.Auth)
 	app.POST("/user", user.Register)
+	app.POST("/", events.Create)
 	app.GET("/feed", events.Load)
-	app.POST("/profile", user.Profile)
-	app.POST("/attend", user.Participate)
+	//app.POST("/profile", user.Profile)
+	//app.POST("/attend", user.Participate)
 
 	err := app.Run("localhost:" + config.Port)
 	if err != nil {
