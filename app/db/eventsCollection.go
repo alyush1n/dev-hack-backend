@@ -43,7 +43,10 @@ func UpdateEvent(event model.Events) (isExist bool) {
 			{"name", event.Name},
 			{"location", event.Location},
 			{"date", event.Date},
-			{"attachment", event.Attachment},
+			{"attachment", bson.D{
+				{"url", event.URL},
+				{"sent_by", event.SentBy},
+			}},
 		}},
 	}
 

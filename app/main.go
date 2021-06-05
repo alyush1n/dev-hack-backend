@@ -11,7 +11,7 @@ import (
 func main() {
 
 	config.Load()
-
+	fmt.Println(config.MongoPass)
 	db.Connect()
 
 	app := gin.Default()

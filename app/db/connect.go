@@ -13,24 +13,6 @@ import (
 var client *mongo.Client
 
 func Connect() {
-
-	//var err error
-	//
-	//ctx := context.Background()
-	//clientOptions := options.Client().ApplyURI("mongodb+srv://fizik:"+config.MongoPass+"@cluster0.oeuni.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
-	//client, err := mongo.NewClient(clientOptions)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	//defer cancel()
-	//
-	//err = client.Connect(ctx)
-	//if err != nil {
-	//	fmt.Println("Client error: "+err.Error())
-	//}
-
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	var err error

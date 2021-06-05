@@ -9,7 +9,7 @@ import (
 var (
 	AccessSecret string
 	MongoPass    string
-	Port string
+	Port         string
 )
 
 func Load() {
