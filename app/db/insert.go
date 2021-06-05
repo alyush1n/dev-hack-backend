@@ -14,7 +14,7 @@ func InsertUser(User model.User) (err error) {
 }
 
 func InsertEvent(Event model.Event) (err error) {
-	_, err = eventCollection.InsertOne(context.Background(), Event)
+	_, err = eventsCollection.InsertOne(context.Background(), Event)
 	if err != nil {
 		return err
 	}

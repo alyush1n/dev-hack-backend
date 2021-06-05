@@ -42,11 +42,11 @@ func Create(c *gin.Context) {
 	//url = fmt.Sprintf(url, storage.S3_BUCKET, storage.S3_REGION, fileName)
 	fmt.Println(url)
 	jsonInput := struct {
-		Type             string `json:"type"`
-		Name             string `json:"name"`
-		Location         string `json:"location"`
-		Date             string `json:"date"`
-		model.Attachment `json:"attachment"`
+		Type     string `json:"type"`
+		Name     string `json:"name"`
+		Location string `json:"location"`
+		Date     string `json:"date"`
+		SentBy   string `json:"sent_by"`
 	}{}
 
 	if err := c.ShouldBindJSON(&jsonInput); err != nil {
@@ -66,11 +66,17 @@ func Create(c *gin.Context) {
 		Attachment: model.Attachment{
 			Id:     primitive.NewObjectID(),
 			URL:    url,
-			SentBy: "none",
+			SentBy: jsonInput.SentBy,
 		},
 	}
 
-	db.InsertEvent(event)
+	err = db.InsertEvent(event)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "internal server error",
+		})
+	}
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "ok",

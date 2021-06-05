@@ -22,7 +22,7 @@ import (
 //		}},
 //	}
 //
-//	_, err := eventCollection.UpdateOne(context.Background(), update, filter)
+//	_, err := eventsCollection.UpdateOne(context.Background(), update, filter)
 //	if err != nil {
 //		if err == mongo.ErrNoDocuments {
 //			return false

@@ -12,7 +12,6 @@ import (
 func main() {
 
 	config.Load()
-	fmt.Println(config.MongoPass)
 	db.Connect()
 
 	app := gin.Default()
@@ -25,6 +24,9 @@ func main() {
 	app.POST("/user", user.Register)
 	app.POST("/event", events.Create)
 	app.GET("/feed", events.Load)
+	app.PUT("/user", user.Update)
+
+
 
 	err := app.Run("localhost:" + config.Port)
 	if err != nil {

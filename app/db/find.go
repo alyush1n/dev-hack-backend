@@ -21,7 +21,7 @@ func GetClubByID(Id primitive.ObjectID) (club model.Club) {
 func GetEventByID(Id primitive.ObjectID) (event model.Event, isExist bool) {
 	filter := bson.M{"_id": Id}
 
-	err := eventCollection.FindOne(context.Background(), filter).Decode(&event)
+	err := eventsCollection.FindOne(context.Background(), filter).Decode(&event)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return model.Event{}, false

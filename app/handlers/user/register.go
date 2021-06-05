@@ -36,10 +36,17 @@ func Register(c *gin.Context) {
 	}
 	userID := primitive.NewObjectID()
 	user := model.User{
-		Id:       userID,
-		Username: jsonInput.Username,
-		Password: string(hashedPassword),
+		Id:        userID,
+		Username:  jsonInput.Username,
+		Password:  string(hashedPassword),
+		Clubs:     nil,
+		FirstName: "abc",
+		LastName:  "def",
+		Sex:       "non-binary",
+		Points:    "0",
+		Stats:     model.Stats{},
 	}
+
 	err = db.InsertUser(user)
 	if err != nil {
 		fmt.Println(err)

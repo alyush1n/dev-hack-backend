@@ -41,7 +41,7 @@ func Load(c *gin.Context) {
 		return
 	}
 
-	var list []model.Event
+	list := make([]model.Event, 0)
 
 	user, _ := db.FindUserByUsername(username)
 	for _, clubID := range user.Clubs {

@@ -10,7 +10,7 @@ import (
 func DeleteEvent(event model.Event) (isExist bool) {
 	filter := bson.M{"_id": event.Id}
 
-	_, err := eventCollection.DeleteOne(context.Background(), filter)
+	_, err := eventsCollection.DeleteOne(context.Background(), filter)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return false
