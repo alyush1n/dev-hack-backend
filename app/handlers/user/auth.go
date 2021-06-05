@@ -1,12 +1,16 @@
 package user
 
 import (
+	"dev-hack-backend/app/config"
 	"dev-hack-backend/app/db"
 	"dev-hack-backend/app/session"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/zhashkevych/auth/pkg/auth"
+	"github.com/zhashkevych/auth/pkg/parser"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
+	"strings"
 )
 
 func Auth(c *gin.Context) {
@@ -47,4 +51,35 @@ func Auth(c *gin.Context) {
 		"token":   token,
 	})
 
+}
+
+func ParseBearer(c *gin.Context) (string, bool) {
+	authHeader := c.GetHeader("Authorization")
+	if authHeader == "" {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return "", true
+	}
+
+	headerParts := strings.Split(authHeader, " ")
+	if len(headerParts) != 2 {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return "", true
+	}
+
+	if headerParts[0] != "Bearer" {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return "", true
+	}
+
+	username, err := parser.ParseToken(headerParts[1], []byte(config.AccessSecret))
+	if err != nil {
+		status := http.StatusBadRequest
+		if err == auth.ErrInvalidAccessToken {
+			status = http.StatusUnauthorized
+		}
+
+		c.AbortWithStatus(status)
+		return "", true
+	}
+	return username, false
 }

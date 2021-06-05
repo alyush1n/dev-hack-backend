@@ -21,6 +21,7 @@ type Stats struct {
 
 type Event struct {
 	Id         primitive.ObjectID `bson:"_id"`
+	Clubs      []string           `json:"clubs" bson:"clubs"`
 	Type       string             `json:"type"`
 	Name       string             `json:"name" bson:"name"`
 	Location   string             `json:"location" bson:"location"`
@@ -36,6 +37,7 @@ type Attachment struct {
 
 type Club struct {
 	Id              primitive.ObjectID `bson:"_id"`
+	Name            string
 	IncomingEvents  []primitive.ObjectID
 	Logo            Attachment
 	BackgroundImage Attachment

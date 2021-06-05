@@ -11,10 +11,11 @@ import (
 )
 
 var (
-	client           *mongo.Client
-	usersCollection  *mongo.Collection
-	clubsCollection  *mongo.Collection
-	eventsCollection *mongo.Collection
+	client               *mongo.Client
+	usersCollection      *mongo.Collection
+	clubsCollection      *mongo.Collection
+	eventsCollection     *mongo.Collection
+	attachmentCollection *mongo.Collection
 )
 
 func Connect() {
@@ -30,6 +31,7 @@ func Connect() {
 	usersCollection = database.Collection("users")
 	clubsCollection = database.Collection("clubs")
 	eventsCollection = database.Collection("events")
+	attachmentCollection = database.Collection("attachment")
 
 	fmt.Println("Connected to MongoDB!")
 }

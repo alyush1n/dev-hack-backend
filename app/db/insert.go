@@ -20,3 +20,19 @@ func InsertEvent(Event model.Event) (err error) {
 	}
 	return nil
 }
+
+func InsertClub(club model.Club) (err error) {
+	_, err = clubsCollection.InsertOne(context.Background(), club)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func InsertAttachment(a model.Attachment) (err error) {
+	_, err = attachmentCollection.InsertOne(context.Background(), a)
+	if err != nil {
+		return err
+	}
+	return nil
+}

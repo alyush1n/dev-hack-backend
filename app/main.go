@@ -3,6 +3,7 @@ package main
 import (
 	"dev-hack-backend/app/config"
 	"dev-hack-backend/app/db"
+	"dev-hack-backend/app/handlers/attachments"
 	"dev-hack-backend/app/handlers/events"
 	"dev-hack-backend/app/handlers/user"
 	"fmt"
@@ -25,13 +26,10 @@ func main() {
 	app.POST("/event", events.Create)
 	app.GET("/feed", events.Load)
 	app.PUT("/user", user.Update)
-
-
-
+	app.POST("/attachment", attachments.Upload)
 	err := app.Run("localhost:" + config.Port)
 	if err != nil {
 		fmt.Println("Error in launching backend: " + err.Error())
 	}
-
 
 }

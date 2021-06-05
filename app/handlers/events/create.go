@@ -28,7 +28,7 @@ func Create(c *gin.Context) {
 		Credentials: credentials.NewStaticCredentials(config.S3ID, config.S3Secret, ""),
 	})
 	if err != nil {
-		log.Fatal("sessionn: " + err.Error())
+		log.Fatal("session	: " + err.Error())
 	}
 
 	f, err := fileHeader.Open()
@@ -42,11 +42,12 @@ func Create(c *gin.Context) {
 	//url = fmt.Sprintf(url, storage.S3_BUCKET, storage.S3_REGION, fileName)
 	fmt.Println(url)
 	jsonInput := struct {
-		Type     string `json:"type"`
-		Name     string `json:"name"`
-		Location string `json:"location"`
-		Date     string `json:"date"`
-		SentBy   string `json:"sent_by"`
+		Clubs    []string `json:"clubs"`
+		Type     string   `json:"type"`
+		Name     string   `json:"name"`
+		Location string   `json:"location"`
+		Date     string   `json:"date"`
+		SentBy   string   `json:"sent_by"`
 	}{}
 
 	if err := c.ShouldBindJSON(&jsonInput); err != nil {
