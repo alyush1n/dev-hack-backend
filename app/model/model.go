@@ -9,7 +9,7 @@ type User struct {
 	Id        primitive.ObjectID `bson:"_id"`
 	Username  string             `json:"username" bson:"username" binding:"required"`
 	Password  string             `json:"password" bson:"password" binding:"required"`
-	Clubs     []string
+	Clubs     []primitive.ObjectID
 	FirstName string
 	LastName  string
 	Sex       string
@@ -36,8 +36,8 @@ type Attachment struct {
 }
 
 type Club struct {
-	IncomingEvents  []string
+	Id              primitive.ObjectID `bson:"_id"`
+	IncomingEvents  []primitive.ObjectID
 	Logo            Attachment
 	BackgroundImage Attachment
 }
-

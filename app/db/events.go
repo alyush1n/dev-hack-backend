@@ -22,7 +22,7 @@ func InsertEvent(Event model.Event) (isExist bool) {
 	return true
 }
 
-func FindEventById(Id primitive.ObjectID) (event model.Event, isExist bool) {
+func GetEventByID(Id primitive.ObjectID) (event model.Event, isExist bool) {
 	filter := bson.M{"_id": Id}
 
 	err := eventCollection().FindOne(context.Background(), filter).Decode(&event)
