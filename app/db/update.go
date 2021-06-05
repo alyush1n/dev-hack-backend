@@ -40,6 +40,13 @@ func UpdateUser(User model.User) (isExist bool) {
 		{"$set", bson.D{
 			{"username", User.Username},
 			{"password", User.Password},
+			{"first_name", User.FirstName},
+			{"last_name", User.LastName},
+			{"sex", User.Sex},
+			{"points", User.Points},
+		}},
+		{"$push", bson.D{
+			{"clubs", User.Clubs},
 		}},
 	}
 
