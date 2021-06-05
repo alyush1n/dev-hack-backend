@@ -10,6 +10,8 @@ var (
 	AccessSecret string
 	MongoPass    string
 	Port         string
+	S3ID         string
+	S3Secret     string
 )
 
 func Load() {
@@ -20,5 +22,7 @@ func Load() {
 		AccessSecret = os.Getenv("ACCESS_SECRET")
 		MongoPass = os.Getenv("MONGO_PASS")
 		Port = os.Getenv("PORT")
+		S3ID = os.Getenv("S3_ID")
+		S3Secret = os.Getenv("S3_SECRET")
 	}
 }

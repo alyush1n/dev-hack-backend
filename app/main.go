@@ -23,11 +23,13 @@ func main() {
 	})
 	app.POST("/auth", user.Auth)
 	app.POST("/user", user.Register)
-	app.POST("/event",events.Create)
+	app.POST("/event", events.Create)
 	app.GET("/feed", events.Load)
 
 	err := app.Run("localhost:" + config.Port)
 	if err != nil {
 		fmt.Println("Error in launching backend: " + err.Error())
 	}
+
+
 }
