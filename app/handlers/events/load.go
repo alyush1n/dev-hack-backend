@@ -46,7 +46,7 @@ func Load(c *gin.Context) {
 	user, _ := db.FindUserByUsername(username)
 	for _, clubID := range user.Clubs {
 		club := db.GetClubByID(clubID)
-		for _, eventID := range club.Events {
+		for _, eventID := range club.IncomingEvents {
 			event, _ := db.GetEventByID(eventID)
 			list = append(list, event)
 		}
