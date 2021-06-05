@@ -26,14 +26,12 @@ type Event struct {
 	City            string             `json:"city" bson:"city" binding:"required"`
 	Date            string             `json:"date" bson:"date"`
 	Logo            Attachment         `json:"logo" bson:"logo"`
-	BackgroundImage Attachment         `json:"background_image" bson:"background_image"` //обратимся к SendBy от фотокарточки и получим отправителя
-	// (создателя ивента)
+	BackgroundImage Attachment         `json:"background_image" bson:"background_image"` //обратимся к SendBy от фотокарточки и получим отправителя (создателя ивента)
 }
 
 type Attachment struct {
-	Id     primitive.ObjectID `bson:"_id"`
-	URL    string             `json:"url" bson:"url" binding:"required"`
-	SentBy string             `json:"sent_by" bson:"sent_by" binding:"required"`
+	URL    string `json:"url" bson:"url" binding:"required"`
+	SentBy string `json:"sent_by" bson:"sent_by" binding:"required"`
 }
 
 type Club struct { //tags

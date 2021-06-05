@@ -3,6 +3,7 @@ package events
 import (
 	"dev-hack-backend/app/db"
 	"dev-hack-backend/app/model"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
@@ -25,6 +26,7 @@ func Create(c *gin.Context) {
 	}
 
 	eventID := primitive.NewObjectID()
+	fmt.Println(eventID)
 	event := model.Event{
 		Id:              eventID,
 		Name:            jsonInput.Name,
@@ -33,6 +35,7 @@ func Create(c *gin.Context) {
 		Logo:            jsonInput.Logo,
 		BackgroundImage: jsonInput.BackgroundImage,
 	}
+	fmt.Println(event.Logo)
 
 	err := db.InsertEvent(event)
 	if err != nil {
