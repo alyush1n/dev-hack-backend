@@ -24,3 +24,9 @@ type Attachment struct {
 	URL    string             `json:"url" bson:"url" binding:"required"`
 	SentBy string             `json:"sent_by" bson:"sent_by" binding:"required"`
 }
+
+type Clubs struct {
+	IncomingEvents  []string
+	Logo            Attachment
+	BackgroundImage Attachment
+}
