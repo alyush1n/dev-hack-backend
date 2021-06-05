@@ -43,7 +43,7 @@ func Register(c *gin.Context) {
 		FirstName: "abc",
 		LastName:  "def",
 		Sex:       "non-binary",
-		Points:    "0",
+		Points:    0,
 	}
 
 	err = db.InsertUser(user)

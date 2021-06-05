@@ -33,6 +33,17 @@ import (
 //	return true
 //}
 
+func UpdateEvent(event model.Event) (isExist bool) {
+	filter := bson.M{"_id": event.Id}
+	_, err := eventsCollection.UpdateOne(context.Background(), filter, event)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return false
+		}
+	}
+	return true
+}
+
 func UpdateUser(User model.User) (isExist bool) {
 	filter := bson.M{"_id": User.Id}
 

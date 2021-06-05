@@ -17,7 +17,7 @@ func Create(c *gin.Context) {
 		Location string `json:"location"`
 		Date     string `json:"date"`
 		SentBy   string `json:"sent_by"`
-		URL      string `json:"url"`
+		URL      []string `json:"url"`
 	}{}
 
 	if err := c.ShouldBindJSON(&jsonInput); err != nil {

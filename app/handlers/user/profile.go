@@ -32,3 +32,18 @@ func Update(c *gin.Context) {
 	return
 
 }
+
+func Me(c *gin.Context) {
+	username, done := ParseBearer(c)
+	if done {
+		c.AbortWithStatus(http.StatusInternalServerError)
+	}
+	user, ok := db.FindUserByUsername(username)
+	if ok {
+		c.JSON(http.StatusOK, gin.H{
+			"user": user,
+		})
+		return
+	}
+	c.AbortWithStatus(http.StatusInternalServerError)
+}
