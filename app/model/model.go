@@ -2,7 +2,6 @@ package model
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"time"
 )
 
 type User struct {
@@ -22,11 +21,11 @@ type Stats struct {
 
 type Event struct {
 	Id         primitive.ObjectID `bson:"_id"`
-	Name       string             `json:"name" bson:"name" binding:"required"`
-	Location   string             `json:"location" bson:"location" binding:"required"`
-	Date       time.Time          `json:"date" bson:"date"`
+	Type       string             `json:"type"`
+	Name       string             `json:"name" bson:"name"`
+	Location   string             `json:"location" bson:"location"`
+	Date       string             `json:"date" bson:"date"`
 	Attachment `json:"attachment" bson:"attachment"`
-	IsUnique   bool
 }
 
 type Attachment struct {
