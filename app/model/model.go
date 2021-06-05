@@ -19,7 +19,7 @@ type Event struct {
 	Id          primitive.ObjectID `json:"id" bson:"_id"`
 	Type        string             `json:"type" bson:"type"`
 	Clubs       []string           `json:"clubs" bson:"clubs"`
-	Count       int               `json:"count" bson:"count"`
+	Count       int                `json:"count" bson:"count"`
 	Name        string             `json:"name" bson:"name"`
 	Description string             `json:"description" bson:"description"`
 	Location    string             `json:"location" bson:"location"`
@@ -36,7 +36,8 @@ type Attachment struct {
 type Club struct {
 	Id              primitive.ObjectID `json:"id" bson:"_id"`
 	Name            string             `json:"name" bson:"name"`
-	Count           int               `json:"count" bson:"count"`
+	Description     string             `json:"description" bson:"description"`
+	Count           int                `json:"count" bson:"count"`
 	IncomingEvents  []string           `json:"incoming_events" bson:"incoming_events"`
 	Logo            Attachment         `json:"logo" bson:"logo"`
 	BackgroundImage Attachment         `json:"background_image" bson:"background_image"`
