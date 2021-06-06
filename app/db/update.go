@@ -3,7 +3,9 @@ package db
 import (
 	"context"
 	"dev-hack-backend/app/model"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -68,4 +70,14 @@ func UpdateUser(User model.User) (isExist bool) {
 		}
 	}
 	return true
+}
+
+func AddEventToClub(clubName string, eventID primitive.ObjectID) {
+	filter := bson.M{"name": clubName}
+	update := bson.M{"$push": bson.M{"incoming_events": eventID}}
+
+	_, err := clubsCollection.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		fmt.Println(err)
+	}
 }

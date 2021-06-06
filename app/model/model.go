@@ -6,6 +6,7 @@ import (
 
 type User struct {
 	Id            primitive.ObjectID `json:"id" bson:"_id"`
+	Type          string             `json:"type" bson:"type"`
 	Username      string             `json:"username" bson:"username" binding:"required"`
 	Password      string             `json:"password" bson:"password" binding:"required"`
 	PhotoURL      string             `json:"photo_url" bson:"photo_url"`
@@ -27,7 +28,7 @@ type Event struct {
 	Location        string             `json:"location" bson:"location"`
 	Date            string             `json:"date" bson:"date"`
 	AvailablePoints int                `json:"available_points" bson:"available_points"`
-	Attachments     []Attachment       `json:"attachments" bson:"attachments"`
+	Attachment      `json:"attachment" bson:"attachment"`
 }
 
 type Attachment struct {
@@ -37,13 +38,13 @@ type Attachment struct {
 }
 
 type Club struct {
-	Id              primitive.ObjectID `json:"id" bson:"_id"`
-	Name            string             `json:"name" bson:"name"`
-	Description     string             `json:"description" bson:"description"`
-	Count           int                `json:"count" bson:"count"`
-	IncomingEvents  []string           `json:"incoming_events" bson:"incoming_events"`
-	Logo            Attachment         `json:"logo" bson:"logo"`
-	BackgroundImage Attachment         `json:"background_image" bson:"background_image"`
+	Id              primitive.ObjectID   `json:"id" bson:"_id"`
+	Name            string               `json:"name" bson:"name"`
+	Description     string               `json:"description" bson:"description"`
+	Count           int                  `json:"count" bson:"count"`
+	IncomingEvents  []primitive.ObjectID `json:"incoming_events" bson:"incoming_events"`
+	Logo            Attachment           `json:"logo" bson:"logo"`
+	BackgroundImage Attachment           `json:"background_image" bson:"background_image"`
 }
 
 type Item struct {

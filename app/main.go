@@ -28,7 +28,7 @@ func main() {
 	app.PUT("/user", user.Update)
 	app.GET("/user/me", user.Me)
 	app.POST("/attachment", attachments.Upload)
-	app.GET("/participate", user.Participate)
+	app.POST("/participate", user.Participate)
 	err := app.Run("localhost:" + config.Port)
 	if err != nil {
 		fmt.Println("Error in launching backend: " + err.Error())

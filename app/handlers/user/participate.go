@@ -4,6 +4,7 @@ import (
 	"dev-hack-backend/app/db"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"math"
 	"net/http"
 	"strconv"
@@ -45,7 +46,11 @@ func Participate(c *gin.Context) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		event, ok := db.GetEventByID(jsonInput.EventID)
+		objID, err := primitive.ObjectIDFromHex(jsonInput.EventID)
+		if err != nil {
+			fmt.Println(err)
+		}
+		event, ok := db.GetEventByID(objID)
 		if !ok {
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return

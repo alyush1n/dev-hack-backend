@@ -19,14 +19,10 @@ func GetClubByName(name string) (club model.Club) {
 	return club
 }
 
-func GetEventByID(Id string) (event model.Event, isExist bool) {
-	objID, err := primitive.ObjectIDFromHex(Id)
-	if err != nil {
-		fmt.Println(err)
-	}
-	filter := bson.M{"_id": objID}
+func GetEventByID(Id primitive.ObjectID) (event model.Event, isExist bool) {
+	filter := bson.M{"_id": Id}
 
-	err = eventsCollection.FindOne(context.Background(), filter).Decode(&event)
+	err := eventsCollection.FindOne(context.Background(), filter).Decode(&event)
 	if err != nil {
 		fmt.Println(err)
 		if err == mongo.ErrNoDocuments {
