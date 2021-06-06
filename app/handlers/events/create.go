@@ -17,7 +17,7 @@ func Create(c *gin.Context) {
 		Location string `json:"location"`
 		Date     string `json:"date"`
 		SentBy   string `json:"sent_by"`
-		URL      []string `json:"url"`
+		URL      string `json:"url"`
 	}{}
 
 	if err := c.ShouldBindJSON(&jsonInput); err != nil {
@@ -28,20 +28,22 @@ func Create(c *gin.Context) {
 	}
 
 	eventID := primitive.NewObjectID()
+	a := make([]model.Attachment, 0)
+	a = append(a, model.Attachment{
+		Id:     primitive.NewObjectID(),
+		URL:    jsonInput.URL,
+		SentBy: jsonInput.SentBy,
+	})
 	event := model.Event{
-		Id:       eventID,
-		Type:     jsonInput.Type,
-		Name:     jsonInput.Name,
-		Count:    jsonInput.Count,
-		Location: jsonInput.Location,
-		Date:     jsonInput.Date,
-		Attachment: model.Attachment{
-			Id:     primitive.NewObjectID(),
-			URL:    jsonInput.URL,
-			SentBy: jsonInput.SentBy,
-		},
+		Id:          eventID,
+		Type:        jsonInput.Type,
+		Name:        jsonInput.Name,
+		Count:       jsonInput.Count,
+		Location:    jsonInput.Location,
+		Date:        jsonInput.Date,
+		Attachments: a,
 	}
-	err := db.InsertAttachment(event.Attachment)
+	err := db.InsertAttachment(event.Attachments[0])
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
