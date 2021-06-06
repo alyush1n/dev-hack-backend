@@ -81,3 +81,13 @@ func AddEventToClub(clubName string, eventID primitive.ObjectID) {
 		fmt.Println(err)
 	}
 }
+
+func AddRegisteredEventToUser(username string, eventID primitive.ObjectID) {
+	filter := bson.M{"username": username}
+	update := bson.M{"$push": bson.M{"registered_events": eventID}}
+
+	_, err := usersCollection.UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		fmt.Println(err)
+	}
+}

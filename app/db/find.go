@@ -46,3 +46,15 @@ func FindUserByUsername(Username string) (User model.User, isExist bool) {
 	}
 	return User, true
 }
+
+func GetItemsList() (item model.Item) {
+	err := itemsCollection.FindOne(context.Background(), "").Decode(&item)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return model.Item{}
+		}
+		fmt.Println(err)
+		return
+	}
+	return item
+}

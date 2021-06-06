@@ -16,6 +16,7 @@ var (
 	clubsCollection      *mongo.Collection
 	eventsCollection     *mongo.Collection
 	attachmentCollection *mongo.Collection
+	itemsCollection      *mongo.Collection
 )
 
 func Connect() {
@@ -32,6 +33,7 @@ func Connect() {
 	clubsCollection = database.Collection("clubs")
 	eventsCollection = database.Collection("events")
 	attachmentCollection = database.Collection("attachment")
+	itemsCollection = database.Collection("items")
 
 	fmt.Println("Connected to MongoDB!")
 }

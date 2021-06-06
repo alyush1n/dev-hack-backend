@@ -13,7 +13,36 @@ import (
 
 const Distance = 0.5
 
-func Participate(c *gin.Context) {
+func RegisterToEvent(c *gin.Context) {
+	jsonInput := struct {
+		EventID string `json:"event_id" bson:"event_id"`
+	}{}
+
+	if err := c.ShouldBindJSON(&jsonInput); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+	}
+
+	username, done := ParseBearer(c)
+	if done {
+		return
+	}
+
+	user, ok := db.FindUserByUsername(username)
+	if ok {
+		objID, err := primitive.ObjectIDFromHex(jsonInput.EventID)
+		if err != nil {
+			fmt.Println(err)
+			c.AbortWithStatus(http.StatusInternalServerError)
+		}
+		db.AddRegisteredEventToUser(user.Username, objID)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+}
+
+func Visit(c *gin.Context) {
 
 	jsonInput := struct {
 		EventID      string `json:"event_id" bson:"event_id"`
@@ -31,9 +60,9 @@ func Participate(c *gin.Context) {
 
 	user, ok := db.FindUserByUsername(username)
 	if ok {
-
 		xys := strings.Split(jsonInput.UserLocation, " ")
 		if len(xys) != 2 {
+			fmt.Println("!=2 ")
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
@@ -57,6 +86,7 @@ func Participate(c *gin.Context) {
 		}
 		eventXYS := strings.Split(event.Location, " ")
 		if len(eventXYS) != 2 {
+			fmt.Println("!=2222 ")
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
