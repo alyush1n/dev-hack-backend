@@ -9,7 +9,7 @@ type User struct {
 	Username      string             `json:"username" bson:"username" binding:"required"`
 	Password      string             `json:"password" bson:"password" binding:"required"`
 	Clubs         []string           `json:"clubs" bson:"clubs"`
-	VisitedEvents []string           `json:"visited" bson:"visited"`
+	VisitedEvents []string           `json:"visited_events" bson:"visited_events"`
 	FirstName     string             `json:"first_name" bson:"first_name"`
 	LastName      string             `json:"last_name" bson:"last_name"`
 	Sex           string             `json:"sex" bson:"sex"`
@@ -26,12 +26,12 @@ type Event struct {
 	Location        string             `json:"location" bson:"location"`
 	Date            string             `json:"date" bson:"date"`
 	AvailablePoints int                `json:"available_points" bson:"available_points"`
-	Attachment      `json:"attachment" bson:"attachment"`
+	Attachments     []Attachment       `json:"attachments" bson:"attachments"`
 }
 
 type Attachment struct {
 	Id     primitive.ObjectID `json:"id" bson:"_id"`
-	URL    []string           `json:"url" bson:"url" binding:"required"`
+	URL    string             `json:"url" bson:"url" binding:"required"`
 	SentBy string             `json:"sent_by" bson:"sent_by" binding:"required"`
 }
 

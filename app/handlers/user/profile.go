@@ -9,7 +9,12 @@ import (
 
 func Update(c *gin.Context) {
 
-	jsonInput := model.User{}
+	jsonInput := struct {
+		Username  string `json:"username" bson:"username"`
+		FirstName string `json:"first_name" bson:"first_name"`
+		LastName  string `json:"last_name" bson:"last_name"`
+		Sex       string `json:"sex" bson:"sex"`
+	}{}
 
 	if err := c.ShouldBindJSON(&jsonInput); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -17,17 +22,26 @@ func Update(c *gin.Context) {
 		})
 		return
 	}
-
-	isExist := db.UpdateUser(jsonInput)
-	if !isExist {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "internal server error",
+	user, ok := db.FindUserByUsername(jsonInput.Username)
+	if ok {
+		u := model.User{
+			Id:            user.Id,
+			Username:      user.Username,
+			Password:      user.Password,
+			Clubs:         user.Clubs,
+			VisitedEvents: user.VisitedEvents,
+			FirstName:     jsonInput.Username,
+			LastName:      jsonInput.LastName,
+			Sex:           jsonInput.Sex,
+		}
+		db.UpdateUser(u)
+		c.JSON(http.StatusOK, gin.H{
+			"message": "ok",
 		})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "ok",
+	c.JSON(http.StatusInternalServerError, gin.H{
+		"message": "internal server error",
 	})
 	return
 
