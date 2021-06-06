@@ -14,6 +14,7 @@ func GetClubByName(name string) (club model.Club) {
 
 	err := clubsCollection.FindOne(context.Background(), filter).Decode(&club)
 	if err != nil {
+		fmt.Println(err)
 		return model.Club{}
 	}
 	return club

@@ -37,4 +37,5 @@ func Load(c *gin.Context) {
 		"events_list": eventsList,
 		"clubs_list":  clubsList,
 	})
+
 }
