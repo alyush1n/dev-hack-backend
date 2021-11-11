@@ -25,7 +25,8 @@ func Connect() {
 	var err error
 	client, err = mongo.Connect(ctx, options.Client().ApplyURI("mongodb+srv://fizik:"+config.MongoPass+"@cluster0.oeuni.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err.Error())
+		return
 	}
 
 	database := client.Database("dev-hack")

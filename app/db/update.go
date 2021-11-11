@@ -9,32 +9,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-//func UpdateEvent(event model.Event) (isExist bool) {
-//	filter := bson.M{"_id": event.Id}
-//
-//	update := bson.D{
-//		{"$set", bson.D{
-//			{"name", event.Name},
-//			{"location", event.City},
-//			{"date", event.Date},
-//			{"attachment", bson.D{
-//				{"url", },
-//				{"sent_by", event.SentBy},
-//			}},
-//		}},
-//	}
-//
-//	_, err := eventsCollection.UpdateOne(context.Background(), update, filter)
-//	if err != nil {
-//		if err == mongo.ErrNoDocuments {
-//			return false
-//		}
-//		return
-//	}
-//
-//	return true
-//}
-
 func UpdateEvent(event model.Event) (isExist bool) {
 	filter := bson.M{"_id": event.Id}
 	_, err := eventsCollection.UpdateOne(context.Background(), filter, event)
@@ -46,20 +20,20 @@ func UpdateEvent(event model.Event) (isExist bool) {
 	return true
 }
 
-func UpdateUser(User model.User) (isExist bool) {
-	filter := bson.M{"_id": User.Id}
+func UpdateUser(user model.User) (isExist bool) {
+	filter := bson.M{"_id": user.Id}
 
 	update := bson.D{
 		{"$set", bson.D{
-			{"username", User.Username},
-			{"password", User.Password},
-			{"first_name", User.FirstName},
-			{"last_name", User.LastName},
-			{"sex", User.Sex},
-			{"points", User.Points},
+			{"username", user.Username},
+			{"password", user.Password},
+			{"first_name", user.FirstName},
+			{"last_name", user.LastName},
+			{"sex", user.Sex},
+			{"points", user.Points},
 		}},
 		{"$push", bson.D{
-			{"clubs", User.Clubs},
+			{"clubs", user.Clubs},
 		}},
 	}
 

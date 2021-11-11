@@ -5,16 +5,16 @@ import (
 	"dev-hack-backend/app/model"
 )
 
-func InsertUser(User model.User) (err error) {
-	_, err = usersCollection.InsertOne(context.Background(), User)
+func InsertUser(user model.User) (err error) {
+	_, err = usersCollection.InsertOne(context.Background(), user)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func InsertEvent(Event model.Event) (err error) {
-	_, err = eventsCollection.InsertOne(context.Background(), Event)
+func InsertEvent(event model.Event) (err error) {
+	_, err = eventsCollection.InsertOne(context.Background(), event)
 	if err != nil {
 		return err
 	}

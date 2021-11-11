@@ -114,10 +114,10 @@ func Visit(c *gin.Context) {
 				"message": "ok",
 			})
 			return
-		} else {
-			c.AbortWithStatus(http.StatusForbidden)
 		}
-	} else {
-		c.AbortWithStatus(http.StatusInternalServerError)
+		c.AbortWithStatus(http.StatusForbidden)
+		return
 	}
+	c.AbortWithStatus(http.StatusInternalServerError)
+
 }

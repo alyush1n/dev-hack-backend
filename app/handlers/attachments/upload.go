@@ -31,7 +31,7 @@ func Upload(c *gin.Context) {
 	if err != nil {
 		log.Fatal("Open header" + err.Error())
 	}
-	fileName := strings.Replace(fileHeader.Filename, " ", "_", -1)
+	fileName := strings.ReplaceAll(fileHeader.Filename, " ", "_")
 	url, err := storage.AddFilesToS3(s, fileName, f)
 
 	c.JSON(http.StatusOK, gin.H{

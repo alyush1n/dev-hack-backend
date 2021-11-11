@@ -9,19 +9,6 @@ import (
 
 func Update(c *gin.Context) {
 
-	//jsonInput := struct {
-	//	Username  string `json:"username" bson:"username"`
-	//	FirstName string `json:"first_name" bson:"first_name"`
-	//	LastName  string `json:"last_name" bson:"last_name"`
-	//	Sex       string `json:"sex" bson:"sex"`
-	//}{}
-	//
-	//if err := c.ShouldBindJSON(&jsonInput); err != nil {
-	//	c.JSON(http.StatusBadRequest, gin.H{
-	//		"message": "not all parameters are specified",
-	//	})
-	//	return
-	//}
 	jsonInput := model.User{}
 	user, ok := db.FindUserByUsername(jsonInput.Username)
 	if ok {

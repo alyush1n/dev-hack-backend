@@ -20,8 +20,8 @@ func GetClubByName(name string) (club model.Club) {
 	return club
 }
 
-func GetEventByID(Id primitive.ObjectID) (event model.Event, isExist bool) {
-	filter := bson.M{"_id": Id}
+func GetEventByID(id primitive.ObjectID) (event model.Event, isExist bool) {
+	filter := bson.M{"_id": id}
 
 	err := eventsCollection.FindOne(context.Background(), filter).Decode(&event)
 	if err != nil {
@@ -34,17 +34,17 @@ func GetEventByID(Id primitive.ObjectID) (event model.Event, isExist bool) {
 	return event, true
 }
 
-func FindUserByUsername(Username string) (User model.User, isExist bool) {
-	filter := bson.M{"username": Username}
+func FindUserByUsername(username string) (user model.User, isExist bool) {
+	filter := bson.M{"username": username}
 
-	err := usersCollection.FindOne(context.Background(), filter).Decode(&User)
+	err := usersCollection.FindOne(context.Background(), filter).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return model.User{}, false
 		}
 		return
 	}
-	return User, true
+	return user, true
 }
 
 func GetItemsList() (item model.Item) {
