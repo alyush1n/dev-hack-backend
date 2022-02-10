@@ -4,7 +4,6 @@ import (
 	"dev-hack-backend/app/db"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"math"
 	"net/http"
 	"strconv"
@@ -13,36 +12,7 @@ import (
 
 const Distance = 0.5
 
-func RegisterToEvent(c *gin.Context) {
-	jsonInput := struct {
-		EventID string `json:"event_id" bson:"event_id"`
-	}{}
-
-	if err := c.ShouldBindJSON(&jsonInput); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-	}
-
-	username, done := ParseBearer(c)
-	if done {
-		return
-	}
-
-	user, ok := db.FindUserByUsername(username)
-	if ok {
-		objID, err := primitive.ObjectIDFromHex(jsonInput.EventID)
-		if err != nil {
-			fmt.Println(err)
-			c.AbortWithStatus(http.StatusInternalServerError)
-		}
-		db.AddRegisteredEventToUser(user.Username, objID)
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "ok",
-	})
-}
-
-func Visit(c *gin.Context) {
+func Participate(c *gin.Context) {
 
 	jsonInput := struct {
 		EventID      string `json:"event_id" bson:"event_id"`
@@ -60,9 +30,9 @@ func Visit(c *gin.Context) {
 
 	user, ok := db.FindUserByUsername(username)
 	if ok {
+
 		xys := strings.Split(jsonInput.UserLocation, " ")
 		if len(xys) != 2 {
-			fmt.Println("!=2 ")
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
@@ -75,18 +45,13 @@ func Visit(c *gin.Context) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		objID, err := primitive.ObjectIDFromHex(jsonInput.EventID)
-		if err != nil {
-			fmt.Println(err)
-		}
-		event, ok := db.GetEventByID(objID)
+		event, ok := db.GetEventByID(jsonInput.EventID)
 		if !ok {
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
 		eventXYS := strings.Split(event.Location, " ")
 		if len(eventXYS) != 2 {
-			fmt.Println("!=2222 ")
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}

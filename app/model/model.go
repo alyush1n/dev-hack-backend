@@ -5,18 +5,16 @@ import (
 )
 
 type User struct {
-	Id               primitive.ObjectID `json:"id" bson:"_id"`
-	Type             string             `json:"type" bson:"type"`
-	Username         string             `json:"username" bson:"username" binding:"required"`
-	Password         string             `json:"password" bson:"password" binding:"required"`
-	PhotoURL         string             `json:"photo_url" bson:"photo_url"`
-	Clubs            []string           `json:"clubs" bson:"clubs"`
-	RegisteredEvents []string           `json:"registered_events" bson:"registered_events"`
-	VisitedEvents    []string           `json:"visited_events" bson:"visited_events"`
-	FirstName        string             `json:"first_name" bson:"first_name"`
-	LastName         string             `json:"last_name" bson:"last_name"`
-	Sex              string             `json:"sex" bson:"sex"`
-	Points           int                `json:"points" bson:"points"`
+	Id            primitive.ObjectID `json:"id" bson:"_id"`
+	Username      string             `json:"username" bson:"username" binding:"required"`
+	Password      string             `json:"password" bson:"password" binding:"required"`
+	PhotoURL      string             `json:"photo_url" bson:"photo_url"`
+	Clubs         []string           `json:"clubs" bson:"clubs"`
+	VisitedEvents []string           `json:"visited_events" bson:"visited_events"`
+	FirstName     string             `json:"first_name" bson:"first_name"`
+	LastName      string             `json:"last_name" bson:"last_name"`
+	Sex           string             `json:"sex" bson:"sex"`
+	Points        int                `json:"points" bson:"points"`
 }
 
 type Event struct {
@@ -29,7 +27,7 @@ type Event struct {
 	Location        string             `json:"location" bson:"location"`
 	Date            string             `json:"date" bson:"date"`
 	AvailablePoints int                `json:"available_points" bson:"available_points"`
-	Attachment      `json:"attachment" bson:"attachment"`
+	Attachments     []Attachment       `json:"attachments" bson:"attachments"`
 }
 
 type Attachment struct {
@@ -39,13 +37,13 @@ type Attachment struct {
 }
 
 type Club struct {
-	Id              primitive.ObjectID   `json:"id" bson:"_id"`
-	Name            string               `json:"name" bson:"name"`
-	Description     string               `json:"description" bson:"description"`
-	Count           int                  `json:"count" bson:"count"`
-	IncomingEvents  []primitive.ObjectID `json:"incoming_events" bson:"incoming_events"`
-	Logo            Attachment           `json:"logo" bson:"logo"`
-	BackgroundImage Attachment           `json:"background_image" bson:"background_image"`
+	Id              primitive.ObjectID `json:"id" bson:"_id"`
+	Name            string             `json:"name" bson:"name"`
+	Description     string             `json:"description" bson:"description"`
+	Count           int                `json:"count" bson:"count"`
+	IncomingEvents  []string           `json:"incoming_events" bson:"incoming_events"`
+	Logo            Attachment         `json:"logo" bson:"logo"`
+	BackgroundImage Attachment         `json:"background_image" bson:"background_image"`
 }
 
 type Item struct {

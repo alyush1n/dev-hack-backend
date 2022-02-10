@@ -9,45 +9,31 @@ import (
 
 func Update(c *gin.Context) {
 
-	//jsonInput := struct {
-	//	Username  string `json:"username" bson:"username"`
-	//	FirstName string `json:"first_name" bson:"first_name"`
-	//	LastName  string `json:"last_name" bson:"last_name"`
-	//	Sex       string `json:"sex" bson:"sex"`
-	//}{}
-	//
-	//if err := c.ShouldBindJSON(&jsonInput); err != nil {
-	//	c.JSON(http.StatusBadRequest, gin.H{
-	//		"message": "not all parameters are specified",
-	//	})
-	//	return
-	//}
-	jsonInput := model.User{}
+	jsonInput := struct {
+		Username  string `json:"username" bson:"username"`
+		FirstName string `json:"first_name" bson:"first_name"`
+		LastName  string `json:"last_name" bson:"last_name"`
+		Sex       string `json:"sex" bson:"sex"`
+	}{}
+
+	if err := c.ShouldBindJSON(&jsonInput); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "not all parameters are specified",
+		})
+		return
+	}
 	user, ok := db.FindUserByUsername(jsonInput.Username)
 	if ok {
-
 		u := model.User{
-			Id:            jsonInput.Id,
-			Username:      jsonInput.Username,
-			Password:      jsonInput.Password,
-			Clubs:         jsonInput.Clubs,
-			VisitedEvents: jsonInput.VisitedEvents,
+			Id:            user.Id,
+			Username:      user.Username,
+			Password:      user.Password,
+			Clubs:         user.Clubs,
+			VisitedEvents: user.VisitedEvents,
 			FirstName:     jsonInput.Username,
 			LastName:      jsonInput.LastName,
 			Sex:           jsonInput.Sex,
 		}
-
-		switch {
-		case jsonInput.Sex == "":
-			u.Sex = user.Sex
-		case jsonInput.LastName == "":
-			u.LastName = user.LastName
-		case jsonInput.FirstName == "":
-			u.FirstName = user.FirstName
-		case jsonInput.PhotoURL == "":
-			u.PhotoURL = user.PhotoURL
-		}
-
 		db.UpdateUser(u)
 		c.JSON(http.StatusOK, gin.H{
 			"message": "ok",
