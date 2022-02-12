@@ -36,6 +36,18 @@ func (h *handler) Register(router *gin.Engine) {
 
 func (h *handler) SignIn(c *gin.Context) {
 	ctx := context.Background()
+	var userDTO SignInUserDTO
+
+	err := c.ShouldBindJSON(&userDTO)
+	if err != nil {
+		api.NewResponse(c, http.StatusBadRequest, "not all parameters are specified "+err.Error())
+		return
+	}
+	user, err := h.userService.GetUserByUsername(ctx, &userDTO)
+	if err != nil {
+		api.NewResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 }
 
@@ -54,6 +66,13 @@ func (h *handler) SignUp(c *gin.Context) {
 		return
 	}
 
+	aToken, rToken, err := h.userService.CreateSession(ctx, user.Id.Hex())
+	if err != nil {
+		api.NewResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	api.ResponseWithTokens(c, http.StatusCreated, "", aToken, rToken)
 }
 
 func (h *handler) GetUser(c *gin.Context) {

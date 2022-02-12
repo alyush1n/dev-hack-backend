@@ -1,6 +1,9 @@
 package user
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"dev-hack-backend/internal/domain/user"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type CreateUserDTO struct {
 	Username  string `json:"username"`
@@ -20,5 +23,11 @@ type UpdateUserDTO struct {
 	FirstName     string             `json:"first_name" `
 	LastName      string             `json:"last_name" `
 	Sex           string             `json:"sex" `
+	Session       user.Session       `json:"session"`
 	Points        int                `json:"points" `
+}
+
+type SignInUserDTO struct {
+	Username string
+	Password string
 }

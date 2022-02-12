@@ -15,22 +15,36 @@ const (
 	objectIdError     = "error with convert string to ObjectId"
 	refreshEqualError = "refresh token is invalid"
 	refreshTimeError  = "failed to refresh token (time is up)"
-	userCollection    = "users"
 )
 
 type userStorage struct {
-	database *mongo.Database
+	database       *mongo.Database
+	userCollection string
 }
 
-func NewStorage(database *mongo.Database) user.Storage {
-	return &userStorage{database: database}
+func NewStorage(database *mongo.Database, userCollection string) user.Storage {
+	return &userStorage{
+		database:       database,
+		userCollection: userCollection,
+	}
 }
 
 func (s *userStorage) GetUserById(ctx context.Context, id string) (*user.User, error) {
 	var user user.User
 	filter := bson.M{"_id": id}
 
-	err := s.database.Collection(userCollection).FindOne(ctx, filter).Decode(&user)
+	err := s.database.Collection(s.userCollection).FindOne(ctx, filter).Decode(&user)
+	if err != nil {
+		return nil, fmt.Errorf(mongoError, "get", err)
+	}
+	return &user, nil
+}
+
+func (s *userStorage) GetUserByUsername(ctx context.Context, username string) (*user.User, error) {
+	var user user.User
+	filter := bson.M{"username": username}
+
+	err := s.database.Collection(s.userCollection).FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		return nil, fmt.Errorf(mongoError, "get", err)
 	}
@@ -38,7 +52,7 @@ func (s *userStorage) GetUserById(ctx context.Context, id string) (*user.User, e
 }
 
 func (s *userStorage) InsertUser(ctx context.Context, user *user.User) (*user.User, error) {
-	_, err := s.database.Collection(userCollection).InsertOne(ctx, user)
+	_, err := s.database.Collection(s.userCollection).InsertOne(ctx, user)
 	if err != nil {
 		return nil, fmt.Errorf(mongoError, "insert", err)
 	}
@@ -64,7 +78,7 @@ func (s *userStorage) UpdateUser(ctx context.Context, user *user.User) (*user.Us
 		}},
 	}
 
-	_, err := s.database.Collection(userCollection).UpdateOne(ctx, update, filter)
+	_, err := s.database.Collection(s.userCollection).UpdateOne(ctx, update, filter)
 	if err != nil {
 		return nil, fmt.Errorf(mongoError, "update", err)
 	}
@@ -74,7 +88,7 @@ func (s *userStorage) UpdateUser(ctx context.Context, user *user.User) (*user.Us
 func (s *userStorage) DeleteUser(ctx context.Context, id string) error {
 	filter := bson.M{"_id": id}
 
-	_, err := s.database.Collection(userCollection).DeleteOne(ctx, filter)
+	_, err := s.database.Collection(s.userCollection).DeleteOne(ctx, filter)
 	if err != nil {
 		return fmt.Errorf(mongoError, "delete", err)
 	}
@@ -95,7 +109,7 @@ func (s *userStorage) UpdateSession(ctx context.Context, id string, session user
 		}},
 	}
 
-	_, err = s.database.Collection(userCollection).UpdateOne(ctx, filter, update)
+	_, err = s.database.Collection(s.userCollection).UpdateOne(ctx, filter, update)
 	if err != nil {
 		return fmt.Errorf(mongoError, "update session", err)
 	}
@@ -110,7 +124,7 @@ func (s *userStorage) GetUserByRT(ctx context.Context, id string, rToken string)
 	filter := bson.M{"_id": userId}
 
 	var user user.User
-	err = s.database.Collection(userCollection).FindOne(ctx, filter).Decode(&user)
+	err = s.database.Collection(s.userCollection).FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		return nil, fmt.Errorf(mongoError, "get", err)
 	}
@@ -120,5 +134,5 @@ func (s *userStorage) GetUserByRT(ctx context.Context, id string, rToken string)
 	if time.Now().After(user.Session.ExpiresAt) {
 		return nil, fmt.Errorf(refreshTimeError)
 	}
-	return user, nil
+	return &user, nil
 }
