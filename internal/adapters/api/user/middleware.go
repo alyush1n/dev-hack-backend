@@ -40,5 +40,5 @@ func (h *handler) parseAuthHandler(c *gin.Context) (string, error) {
 	if len(headerSplit[1]) == 0 {
 		return "", fmt.Errorf(tokenEmptyError)
 	}
-	return h.jwt.ParseToken(headerSplit[1])
+	return h.userService.ParseToken(headerSplit[1])
 }

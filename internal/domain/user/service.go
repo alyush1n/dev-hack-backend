@@ -11,6 +11,7 @@ import (
 
 const (
 	ComparePassError = "password incorrect"
+	ContextKey       = "user_id"
 )
 
 type service struct {
@@ -29,18 +30,22 @@ func NewService(storage Storage, jwt JWTManager, accessTokenTTL, refreshTokenTTL
 	}
 }
 
-func (s *service) GetUserById(ctx context.Context, id string) (*User, error) {
-	return s.storage.GetUserById(ctx, id)
+func (s *service) GetUser(ctx context.Context) (*User, error) {
+	userId := ctx.Value(ContextKey)
+
+	return s.storage.GetUserById(ctx, fmt.Sprintf("%s", userId))
 }
 
-func (s *service) GetUserByUsername(ctx context.Context, dto *user.SignInUserDTO) (*User, error) {
+func (s *service) Authorize(ctx context.Context, dto *user.SignInUserDTO) (*User, error) {
 	user, err := s.storage.GetUserByUsername(ctx, dto.Username)
 	if err != nil {
 		return nil, err
 	}
-	if user.Password != s.HashPassword(ctx, dto.Password) {
+
+	if user.Password != s.HashPassword(dto.Password) {
 		return nil, fmt.Errorf(ComparePassError)
 	}
+
 	return user, nil
 }
 
@@ -61,12 +66,19 @@ func (s *service) InsertUser(ctx context.Context, dto *user.CreateUserDTO) (*Use
 		},
 		Points: 0,
 	}
+
 	return s.storage.InsertUser(ctx, user)
 }
 
 func (s *service) UpdateUser(ctx context.Context, dto *user.UpdateUserDTO) (*User, error) {
+	userId := ctx.Value(ContextKey)
+	id, err := primitive.ObjectIDFromHex(fmt.Sprintf("%s", userId))
+	if err != nil {
+		return nil, err
+	}
+
 	user := &User{
-		Id:            primitive.NewObjectID(),
+		Id:            id,
 		Username:      dto.Username,
 		Password:      dto.Password,
 		PhotoURL:      dto.PhotoURL,
@@ -75,30 +87,35 @@ func (s *service) UpdateUser(ctx context.Context, dto *user.UpdateUserDTO) (*Use
 		FirstName:     dto.FirstName,
 		LastName:      dto.LastName,
 		Sex:           dto.Sex,
-		Session:       dto.Session,
 		Points:        dto.Points,
 	}
+
 	return s.storage.UpdateUser(ctx, user)
 }
 
-func (s *service) DeleteUserById(ctx context.Context, id string) error {
-	return s.storage.DeleteUser(ctx, id)
+func (s *service) DeleteUser(ctx context.Context) error {
+	userId := ctx.Value(ContextKey)
+
+	return s.storage.DeleteUserById(ctx, fmt.Sprintf("%s", userId))
 }
 
 func (s *service) CreateSession(ctx context.Context, id string) (string, string, error) {
-	aToken, err := s.jwt.NewJWT(id, s.accessTokenTTL)
+	aToken, err := s.jwt.NewJWT(id, time.Second*s.accessTokenTTL)
 	if err != nil {
 		return "", "", err
 	}
+
 	rToken, err := s.jwt.NewRefreshToken()
 	if err != nil {
 		return "", "", err
 	}
-	session := Session{RefreshToken: rToken, ExpiresAt: time.Now().Add(s.refreshTokenTTL)}
+
+	session := Session{RefreshToken: rToken, ExpiresAt: time.Now().Add(time.Second * s.refreshTokenTTL)}
 	err = s.storage.UpdateSession(ctx, id, session)
 	if err != nil {
 		return "", "", err
 	}
+
 	return aToken, rToken, nil
 }
 
@@ -111,9 +128,13 @@ func (s *service) RefreshToken(ctx context.Context, id, rToken string) (string, 
 	return s.CreateSession(ctx, id)
 }
 
-func (s *service) HashPassword(ctx context.Context, password string) string {
+func (s *service) HashPassword(password string) string {
 	hash := sha1.New()
 	hash.Write([]byte(password))
 
 	return fmt.Sprintf("%x", password)
+}
+
+func (s *service) ParseToken(accessToken string) (string, error) {
+	return s.jwt.ParseToken(accessToken)
 }

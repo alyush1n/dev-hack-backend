@@ -1,7 +1,6 @@
 package user
 
 import (
-	"dev-hack-backend/internal/domain/user"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -23,7 +22,6 @@ type UpdateUserDTO struct {
 	FirstName     string             `json:"first_name" `
 	LastName      string             `json:"last_name" `
 	Sex           string             `json:"sex" `
-	Session       user.Session       `json:"session"`
 	Points        int                `json:"points" `
 }
 

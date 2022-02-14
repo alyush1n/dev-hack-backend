@@ -31,9 +31,10 @@ func NewStorage(database *mongo.Database, userCollection string) user.Storage {
 
 func (s *userStorage) GetUserById(ctx context.Context, id string) (*user.User, error) {
 	var user user.User
-	filter := bson.M{"_id": id}
+	userId, err := primitive.ObjectIDFromHex(id)
+	filter := bson.M{"_id": userId}
 
-	err := s.database.Collection(s.userCollection).FindOne(ctx, filter).Decode(&user)
+	err = s.database.Collection(s.userCollection).FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		return nil, fmt.Errorf(mongoError, "get", err)
 	}
@@ -85,10 +86,11 @@ func (s *userStorage) UpdateUser(ctx context.Context, user *user.User) (*user.Us
 	return user, nil
 }
 
-func (s *userStorage) DeleteUser(ctx context.Context, id string) error {
-	filter := bson.M{"_id": id}
+func (s *userStorage) DeleteUserById(ctx context.Context, id string) error {
+	userId, err := primitive.ObjectIDFromHex(id)
+	filter := bson.M{"_id": userId}
 
-	_, err := s.database.Collection(s.userCollection).DeleteOne(ctx, filter)
+	_, err = s.database.Collection(s.userCollection).DeleteOne(ctx, filter)
 	if err != nil {
 		return fmt.Errorf(mongoError, "delete", err)
 	}
