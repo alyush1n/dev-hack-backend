@@ -1,44 +1,43 @@
 package user
 
 import (
-	"fmt"
+	api "dev-hack-backend/internal/adapters/api"
+	"dev-hack-backend/pkg/apperror"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
 )
 
 const (
-	userCtx             = "user_id"
 	authorizationHeader = "Authorization"
-	headerEmptyError    = "header is empty"
-	invalidHeaderError  = "invalid auth header"
-	tokenEmptyError     = "token is empty"
+	userCtx             = "user_id"
 )
 
 func (h *handler) userIdentity(c *gin.Context) {
 	id, err := h.parseAuthHandler(c)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": err.Error(),
-		})
+		api.NewAbortResponse(c, http.StatusUnauthorized, err.Error())
 		return
 	}
+
 	c.Set(userCtx, id)
+	c.Next()
 }
 
 func (h *handler) parseAuthHandler(c *gin.Context) (string, error) {
 	header := c.GetHeader(authorizationHeader)
 	if header == "" {
-		return "", fmt.Errorf(headerEmptyError)
+		return "", apperror.HeaderEmptyError
 	}
 
 	headerSplit := strings.Split(header, " ")
 	if len(headerSplit) != 2 || headerSplit[0] != "Bearer" {
-		return "", fmt.Errorf(invalidHeaderError)
+		return "", apperror.InvalidHeaderError
 	}
 
 	if len(headerSplit[1]) == 0 {
-		return "", fmt.Errorf(tokenEmptyError)
+		return "", apperror.TokenEmptyError
 	}
+
 	return h.userService.ParseToken(headerSplit[1])
 }

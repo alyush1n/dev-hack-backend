@@ -1,18 +1,12 @@
 package jwt
 
 import (
-	"dev-hack-backend/internal/domain/user"
+	"dev-hack-backend/internal/service/user"
+	"dev-hack-backend/pkg/apperror"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"math/rand"
 	"time"
-)
-
-const (
-	tokenMethodError = "unexpected token method: %s"
-	tokenError       = "fail to parse token with error %w"
-	tokenClaimsError = "error get user claims from token"
-	randomizerError  = "error set refresh token"
 )
 
 type manager struct {
@@ -40,7 +34,7 @@ func (m *manager) NewRefreshToken() (string, error) {
 
 	_, err := randomizer.Read(bytes)
 	if err != nil {
-		return "", fmt.Errorf(randomizerError)
+		return "", apperror.RandomizerError
 	}
 
 	return fmt.Sprintf("%x", bytes), nil
@@ -50,17 +44,18 @@ func (m *manager) ParseToken(accessToken string) (string, error) {
 	token, err := jwt.Parse(accessToken, func(t *jwt.Token) (interface{}, error) {
 		_, ok := t.Method.(*jwt.SigningMethodHMAC)
 		if !ok {
-			return nil, fmt.Errorf(tokenMethodError, t.Header["alg"])
+			return nil, apperror.TokenMethodError
 		}
+
 		return []byte(m.signingKey), nil
 	})
 	if err != nil {
-		return "", fmt.Errorf(tokenError, err)
+		return "", apperror.TokenError
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return "", fmt.Errorf(tokenClaimsError)
+		return "", apperror.TokenClaimsError
 	}
 
 	return claims["sub"].(string), nil

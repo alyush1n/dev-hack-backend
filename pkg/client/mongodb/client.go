@@ -2,28 +2,30 @@ package mongodb
 
 import (
 	"context"
-	"fmt"
+	"dev-hack-backend/pkg/apperror"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
 	"time"
-)
-
-const (
-	clientError = "failed to create client to mongodb with error %w"
 )
 
 func NewClient(ctx context.Context, mongoURI, database string) (*mongo.Database, error) {
 	c, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
-	client, err := mongo.Connect(c, options.Client().ApplyURI(mongoURI))
+
+	log.Println("mongo connect")
+	option := options.Client().ApplyURI(mongoURI)
+	client, err := mongo.Connect(c, option)
 	if err != nil {
-		return nil, fmt.Errorf(clientError, err)
+		return nil, err
 	}
+
+	log.Println("mongo ping")
 	err = client.Ping(context.Background(), nil)
 	if err != nil {
-		return nil, fmt.Errorf(clientError, err)
+		return nil, apperror.ClientError
 	}
-	fmt.Println("Connected to MongoDB!") // logger
+	log.Println("connected to mongo")
 
 	return client.Database(database), nil
 }

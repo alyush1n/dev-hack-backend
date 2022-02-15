@@ -1,4 +1,4 @@
-package api
+package user
 
 import (
 	"dev-hack-backend/internal/domain/user"
@@ -7,6 +7,16 @@ import (
 
 func NewResponse(c *gin.Context, code int, message string) {
 	c.JSON(code, gin.H{
+		"message": message,
+	})
+}
+
+func NewResponseStatusCode(c *gin.Context, code int) {
+	c.Status(code)
+}
+
+func NewAbortResponse(c *gin.Context, code int, message string) {
+	c.AbortWithStatusJSON(code, gin.H{
 		"message": message,
 	})
 }

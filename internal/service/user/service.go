@@ -3,9 +3,8 @@ package user
 import (
 	"context"
 	"crypto/sha1"
-	"dev-hack-backend/internal/adapters/api/user"
+	user "dev-hack-backend/internal/domain/user"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 
@@ -21,7 +20,7 @@ type service struct {
 	refreshTokenTTL time.Duration
 }
 
-func NewService(storage Storage, jwt JWTManager, accessTokenTTL, refreshTokenTTL time.Duration) user.Service {
+func NewService(storage Storage, jwt JWTManager, accessTokenTTL, refreshTokenTTL time.Duration) Service {
 	return &service{
 		storage:         storage,
 		jwt:             jwt,
@@ -30,67 +29,44 @@ func NewService(storage Storage, jwt JWTManager, accessTokenTTL, refreshTokenTTL
 	}
 }
 
-func (s *service) GetUser(ctx context.Context) (*User, error) {
+func (s *service) GetUser(ctx context.Context) (*user.User, error) {
 	userId := ctx.Value(ContextKey)
 
 	return s.storage.GetUserById(ctx, fmt.Sprintf("%s", userId))
 }
 
-func (s *service) Authorize(ctx context.Context, dto *user.SignInUserDTO) (*User, error) {
-	user, err := s.storage.GetUserByUsername(ctx, dto.Username)
+func (s *service) Authorize(ctx context.Context, username, password string) (*user.User, error) {
+	currentUser, err := s.storage.GetUserByUsername(ctx, username)
 	if err != nil {
 		return nil, err
 	}
 
-	if user.Password != s.HashPassword(dto.Password) {
+	if currentUser.Password != s.HashPassword(password) {
 		return nil, fmt.Errorf(ComparePassError)
 	}
 
-	return user, nil
+	return currentUser, nil
 }
 
-func (s *service) InsertUser(ctx context.Context, dto *user.CreateUserDTO) (*User, error) {
-	user := &User{
-		Id:            primitive.NewObjectID(),
-		Username:      dto.Username,
-		Password:      dto.Password,
-		PhotoURL:      "",
-		Clubs:         nil,
-		VisitedEvents: nil,
-		FirstName:     dto.FirstName,
-		LastName:      dto.LastName,
-		Sex:           dto.Sex,
-		Session: Session{
-			RefreshToken: "",
-			ExpiresAt:    time.Time{},
-		},
-		Points: 0,
-	}
-
-	return s.storage.InsertUser(ctx, user)
+func (s *service) InsertUser(ctx context.Context, currentUser *user.User) error {
+	return s.storage.InsertUser(ctx, currentUser)
 }
 
-func (s *service) UpdateUser(ctx context.Context, dto *user.UpdateUserDTO) (*User, error) {
-	userId := ctx.Value(ContextKey)
-	id, err := primitive.ObjectIDFromHex(fmt.Sprintf("%s", userId))
-	if err != nil {
-		return nil, err
+func (s *service) UpdateUser(ctx context.Context, currentUser *user.User) error {
+	cUser := &user.User{
+		Id:            currentUser.Id,
+		Username:      currentUser.Username,
+		Password:      currentUser.Password,
+		PhotoURL:      currentUser.PhotoURL,
+		Clubs:         currentUser.Clubs,
+		VisitedEvents: currentUser.VisitedEvents,
+		FirstName:     currentUser.FirstName,
+		LastName:      currentUser.LastName,
+		Sex:           currentUser.Sex,
+		Points:        currentUser.Points,
 	}
 
-	user := &User{
-		Id:            id,
-		Username:      dto.Username,
-		Password:      dto.Password,
-		PhotoURL:      dto.PhotoURL,
-		Clubs:         dto.Clubs,
-		VisitedEvents: dto.VisitedEvents,
-		FirstName:     dto.FirstName,
-		LastName:      dto.LastName,
-		Sex:           dto.Sex,
-		Points:        dto.Points,
-	}
-
-	return s.storage.UpdateUser(ctx, user)
+	return s.storage.UpdateUser(ctx, cUser)
 }
 
 func (s *service) DeleteUser(ctx context.Context) error {
@@ -110,7 +86,7 @@ func (s *service) CreateSession(ctx context.Context, id string) (string, string,
 		return "", "", err
 	}
 
-	session := Session{RefreshToken: rToken, ExpiresAt: time.Now().Add(time.Second * s.refreshTokenTTL)}
+	session := user.Session{RefreshToken: rToken, ExpiresAt: time.Now().Add(time.Second * s.refreshTokenTTL)}
 	err = s.storage.UpdateSession(ctx, id, session)
 	if err != nil {
 		return "", "", err
@@ -137,4 +113,8 @@ func (s *service) HashPassword(password string) string {
 
 func (s *service) ParseToken(accessToken string) (string, error) {
 	return s.jwt.ParseToken(accessToken)
+}
+
+func (s *service) CreateContextWithTimeout(ctx context.Context, contextTTL time.Duration) (context.Context, context.CancelFunc) {
+	return context.WithTimeout(ctx, contextTTL)
 }
