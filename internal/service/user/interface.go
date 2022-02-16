@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"dev-hack-backend/internal/domain/user"
+	"github.com/gin-gonic/gin"
 	"time"
 )
 
@@ -19,7 +20,8 @@ type (
 		RefreshToken(ctx context.Context, id, rToken string) (string, string, error)
 
 		ParseToken(accessToken string) (string, error)
-		CreateContextWithTimeout(ctx context.Context, contextTTL time.Duration) (context.Context, context.CancelFunc)
+		ContextWithTimeout(c *gin.Context, ttl time.Duration, key string) (context.Context, context.CancelFunc)
+		CompareID(ctx context.Context, compareUserID string) bool
 	}
 
 	JWTManager interface {

@@ -41,3 +41,7 @@ func (h *handler) parseAuthHandler(c *gin.Context) (string, error) {
 
 	return h.userService.ParseToken(headerSplit[1])
 }
+
+func (h *handler) tokenValid(c *gin.Context) {
+
+}

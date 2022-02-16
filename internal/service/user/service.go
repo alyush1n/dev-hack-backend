@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	user "dev-hack-backend/internal/domain/user"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"time"
 )
 
@@ -49,24 +50,12 @@ func (s *service) Authorize(ctx context.Context, username, password string) (*us
 }
 
 func (s *service) InsertUser(ctx context.Context, currentUser *user.User) error {
+	currentUser.Password = s.HashPassword(currentUser.Password)
 	return s.storage.InsertUser(ctx, currentUser)
 }
 
 func (s *service) UpdateUser(ctx context.Context, currentUser *user.User) error {
-	cUser := &user.User{
-		Id:            currentUser.Id,
-		Username:      currentUser.Username,
-		Password:      currentUser.Password,
-		PhotoURL:      currentUser.PhotoURL,
-		Clubs:         currentUser.Clubs,
-		VisitedEvents: currentUser.VisitedEvents,
-		FirstName:     currentUser.FirstName,
-		LastName:      currentUser.LastName,
-		Sex:           currentUser.Sex,
-		Points:        currentUser.Points,
-	}
-
-	return s.storage.UpdateUser(ctx, cUser)
+	return s.storage.UpdateUser(ctx, currentUser)
 }
 
 func (s *service) DeleteUser(ctx context.Context) error {
@@ -76,7 +65,7 @@ func (s *service) DeleteUser(ctx context.Context) error {
 }
 
 func (s *service) CreateSession(ctx context.Context, id string) (string, string, error) {
-	aToken, err := s.jwt.NewJWT(id, time.Second*s.accessTokenTTL)
+	aToken, err := s.jwt.NewJWT(id, s.accessTokenTTL)
 	if err != nil {
 		return "", "", err
 	}
@@ -86,7 +75,7 @@ func (s *service) CreateSession(ctx context.Context, id string) (string, string,
 		return "", "", err
 	}
 
-	session := user.Session{RefreshToken: rToken, ExpiresAt: time.Now().Add(time.Second * s.refreshTokenTTL)}
+	session := user.Session{RefreshToken: rToken, ExpiresAt: time.Now().Add(s.refreshTokenTTL)}
 	err = s.storage.UpdateSession(ctx, id, session)
 	if err != nil {
 		return "", "", err
@@ -115,6 +104,21 @@ func (s *service) ParseToken(accessToken string) (string, error) {
 	return s.jwt.ParseToken(accessToken)
 }
 
-func (s *service) CreateContextWithTimeout(ctx context.Context, contextTTL time.Duration) (context.Context, context.CancelFunc) {
-	return context.WithTimeout(ctx, contextTTL)
+func (s *service) CompareID(ctx context.Context, compareUserID string) bool {
+	userID := fmt.Sprintf("%s", ctx.Value(ContextKey))
+	if userID != compareUserID {
+		return false
+	}
+
+	return true
+}
+
+func (s *service) ContextWithTimeout(c *gin.Context, ttl time.Duration, key string) (context.Context, context.CancelFunc) {
+	ctx, cancel := context.WithTimeout(c.Request.Context(), ttl)
+	ctxValue, ok := c.Get(ContextKey)
+	if !ok {
+		return ctx, cancel
+	}
+	ctx = context.WithValue(ctx, ContextKey, ctxValue)
+	return ctx, cancel
 }

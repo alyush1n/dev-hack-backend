@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"log"
 	"time"
 )
 
@@ -63,24 +64,9 @@ func (s *userStorage) InsertUser(ctx context.Context, currentUser *user.User) er
 func (s *userStorage) UpdateUser(ctx context.Context, currentUser *user.User) error {
 	filter := bson.M{"_id": currentUser.Id}
 
-	update := bson.D{
-		{"$set", bson.D{
-			{"username", currentUser.Username},
-			{"password", currentUser.Password},
-			{"photo_url", currentUser.PhotoURL},
-			{"first_name", currentUser.FirstName},
-			{"last_name", currentUser.LastName},
-			{"sex", currentUser.Sex},
-			{"points", currentUser.Points},
-			{"session", currentUser.Session},
-		}},
-		{"$push", bson.D{
-			{"clubs", currentUser.Clubs},
-		}},
-	}
-
-	_, err := s.database.Collection(s.userCollection).UpdateOne(ctx, update, filter)
-	if err != nil {
+	res := s.database.Collection(s.userCollection).FindOneAndReplace(ctx, filter, &currentUser)
+	if res.Err() != nil {
+		log.Print(res.Err().Error())
 		return apperror.MongoUpdateError
 	}
 	return nil

@@ -13,6 +13,10 @@ type manager struct {
 	signingKey string
 }
 
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
 func NewManager(signingKey string) user.JWTManager {
 	return &manager{signingKey: signingKey}
 }
@@ -29,10 +33,7 @@ func (m *manager) NewJWT(userId string, ttl time.Duration) (string, error) {
 func (m *manager) NewRefreshToken() (string, error) {
 	bytes := make([]byte, 16)
 
-	source := rand.NewSource(time.Now().Unix())
-	randomizer := rand.New(source)
-
-	_, err := randomizer.Read(bytes)
+	_, err := rand.Read(bytes)
 	if err != nil {
 		return "", apperror.RandomizerError
 	}

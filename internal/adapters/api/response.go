@@ -11,7 +11,7 @@ func NewResponse(c *gin.Context, code int, message string) {
 	})
 }
 
-func NewResponseStatusCode(c *gin.Context, code int) {
+func NewResponseStatus(c *gin.Context, code int) {
 	c.Status(code)
 }
 
@@ -21,8 +21,9 @@ func NewAbortResponse(c *gin.Context, code int, message string) {
 	})
 }
 
-func ResponseWithTokens(c *gin.Context, code int, aToken, rToken string) {
+func ResponseWithTokens(c *gin.Context, code int, userID, aToken, rToken string) {
 	c.JSON(code, gin.H{
+		"id":            userID,
 		"access_token":  aToken,
 		"refresh_token": rToken,
 	})
@@ -31,7 +32,6 @@ func ResponseWithTokens(c *gin.Context, code int, aToken, rToken string) {
 func ResponseUser(c *gin.Context, code int, user *user.User) {
 	c.JSON(code, gin.H{
 		"username":       user.Username,
-		"password":       user.Password,
 		"first_name":     user.FirstName,
 		"last_name":      user.LastName,
 		"clubs":          user.Clubs,
